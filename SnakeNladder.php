@@ -1,40 +1,66 @@
 <?php
 class GameOperation
 {
+    private $startPosition;
+    private $previousPosition;
+    private $count;
+    private $diceNumber;
 
-    function diceRoll()
+    public function __construct()
     {
-        $RollDice = rand(1, 6);
-        echo "Snake and Ladder game played with single player at start position 0" . "\n";
-        echo "The Dice Roll is: " . $RollDice ."\n";
+        $this->startPosition = 0;
+        $this->count = 0;
+    }
+
+
+    public function diceRoll()
+    {
+        $this->previousPosition = $this->startPosition;
+        $this->diceNumber = rand(1, 6);
+        $this->count++;
+        $this->playerCheck();
     }
 
     function playerCheck()
     {
-        $PlayerCheck = rand(0,2);
-        echo "player check: ". $PlayerCheck ."\n";
+        $PlayerCheck = rand(1, 3);
+        $this->nextMove($PlayerCheck);
+    }
+
+    public function nextMove($PlayerCheck)
+    {
 
         /**
-         * PlayerCheck=0 Then Player goes down by snake
+         * PlayerCheck=3 Then Player goes down by snake
          * PlayerCheck=1 Then Player Not play
          * PlayerCheck=2 Then Player Climb Ladder
          */
         switch ($PlayerCheck) {
-            case 0:
-                echo "SNAKE";
-                break;
             case 1:
-                echo "NO PLAY";
+                // No play
+                echo "No Play " . $this->startPosition . " location\n";
                 break;
             case 2:
-                echo "LADDER"."\n";
-                $RollDice = rand(1, 6);
-                echo "The Dice Roll is: " . $RollDice ."\n";
+                // Ladder
+                $this->startPosition += $this->diceNumber;
+                echo "Next position " . $this->startPosition . "\n";
                 break;
+            case 3:
+                // Snake
+                $this->startPosition -= $this->diceNumber;
+                if ($this->startPosition <= 0) {
+                    $this->startPosition = 0;
+                }
+                echo "Position " . $this->startPosition . "\n";
+                break;
+        }
+
+        if ($this->startPosition != 100) {
+            $this->diceRoll();
+        } else {
+            echo "Player won \n";
         }
     }
 }
-
 $game = new GameOperation();
 $game->diceRoll();
-$game->playerCheck();
